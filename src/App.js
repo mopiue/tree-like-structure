@@ -1,25 +1,15 @@
-import logo from './logo.svg';
-import './App.css';
+import NodeList from './components/NodeList/NodeList'
+import ActionsPanel from './components/ActionsPanel/ActionsPanel'
+import './index.css'
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="trees">
+      <span className="title">Tree</span>
+      <NodeList />
+      <ActionsPanel />
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

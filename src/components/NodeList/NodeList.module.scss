@@ -1,0 +1,11 @@
+.NodeList {
+  ul {
+    display: flex;
+    flex-direction: column;
+  }
+
+  span:hover {
+    background-color: rgb(203, 249, 213);
+    cursor: pointer;
+  }
+}
