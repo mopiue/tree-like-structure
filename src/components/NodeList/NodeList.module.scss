@@ -1,4 +1,7 @@
 .NodeList {
+  height: 400px;
+  overflow-y: scroll;
+
   ul {
     display: flex;
     flex-direction: column;
