@@ -4,30 +4,34 @@ import styles from './NodeList.module.scss'
 
 function NodeList() {
   const nodes = useSelector((state) => state.tree.nodes)
+  const currentSelectedNode = useSelector(
+    (state) => state.tree.currentSelectedNode
+  )
 
-  const throughTress = (nodes, nestingLevel = 0) => {
-    const result = []
+  const findNodes = (nodes, items, parentNestingLevel = -1) => {
     for (let i = 0; i < nodes.length; i++) {
       const node = nodes[i]
 
-      if (Array.isArray(node)) {
-        nestingLevel += 1
-        result.push(...throughTress(node, nestingLevel))
-        nestingLevel -= 1
-      } else {
-        result.push({ node, nestingLevel })
+      if (typeof node === 'object') {
+        const nestingLevel = parentNestingLevel + 1
+        const selected = currentSelectedNode === node.id ? true : false
+
+        items.push({ ...node, nestingLevel, selected })
+
+        if (node.children) {
+          findNodes(node.children, items, nestingLevel)
+        }
       }
     }
-    return result
+    return items
   }
-
-  const treesData = throughTress(nodes)
+  const nodeValues = findNodes(nodes, [])
 
   return (
     <div className={styles.NodeList}>
       <ul>
-        {treesData.map(({ node, nestingLevel }, index) => (
-          <NodeElement key={index} nestingLevel={nestingLevel} node={node} />
+        {nodeValues.map((node, index) => (
+          <NodeElement key={index} node={node} />
         ))}
       </ul>
     </div>
