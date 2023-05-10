@@ -1,8 +1,9 @@
 import styled from 'styled-components'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import buttonStyles from '../buttonStyles'
 import { resetNodes } from '../../features/nodesSlice'
+import notify from '../../helpers/notifications'
 
 const ButtonResetStyle = styled.button`
   ${({ disabled }) => buttonStyles(disabled)}
@@ -10,9 +11,13 @@ const ButtonResetStyle = styled.button`
 
 function ButtonReset({ disabled }) {
   const dispatch = useDispatch()
+  const nodes = useSelector((state) => state.nodes.nodes)
 
   const handleResetClick = () => {
-    dispatch(resetNodes())
+    if (nodes.length > 0) {
+      dispatch(resetNodes())
+      notify({ type: 'success', message: 'Nodes were successfully reset' })
+    }
   }
 
   return (

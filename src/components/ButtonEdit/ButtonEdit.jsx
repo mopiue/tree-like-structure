@@ -2,10 +2,10 @@ import styled from 'styled-components'
 import { useDispatch, useSelector } from 'react-redux'
 
 import buttonStyles from '../buttonStyles'
-import { editNode } from '../../features/nodesSlice'
+import { setEditedNodeId } from '../../features/nodesSlice'
 
 const ButtonEditStyle = styled.button`
-  ${({ disabled }) => buttonStyles(disabled)}
+  ${({ disabled }) => [...buttonStyles(disabled), 'width: 80px']}
 `
 
 function ButtonEdit({ disabled }) {
@@ -13,18 +13,26 @@ function ButtonEdit({ disabled }) {
   const currentSelectedNodeId = useSelector(
     (state) => state.nodes.currentSelectedNodeId
   )
+  const currentEditedNodeId = useSelector(
+    (state) => state.nodes.currentEditedNodeId
+  )
 
   const handleEditClick = () => {
     if (currentSelectedNodeId) {
-      try {
-        dispatch(editNode(currentSelectedNodeId))
-      } catch (error) {}
+      dispatch(setEditedNodeId(currentSelectedNodeId))
     }
   }
 
+  const handleCancelClick = () => {
+    dispatch(setEditedNodeId(null))
+  }
+
   return (
-    <ButtonEditStyle disabled={disabled} onClick={handleEditClick}>
-      Edit
+    <ButtonEditStyle
+      disabled={disabled}
+      onClick={!currentEditedNodeId ? handleEditClick : handleCancelClick}
+    >
+      {currentEditedNodeId ? 'Cancel' : 'Edit'}
     </ButtonEditStyle>
   )
 }

@@ -32,7 +32,7 @@ const initialState = {
   ],
   nestingMarginMultiplier: 25,
   currentSelectedNodeId: null,
-  currentEditNodeId: null,
+  currentEditedNodeId: null,
 }
 
 const getNextId = (arr) => {
@@ -79,16 +79,31 @@ const removeNodeById = (id, nodes) => {
   return filteredNodes
 }
 
+const editNodeById = (id, value, nodes) => {
+  let isEdited = false
+  Object.values(nodes).forEach((node) => {
+    if (node.id === id) {
+      node.value = value
+      isEdited = true
+    } else if (node.children) {
+      const childEdited = editNodeById(id, value, node.children)
+      if (childEdited) isEdited = true
+    }
+  })
+  return isEdited
+}
+
 export const nodesSlice = createSlice({
   name: 'tree',
   initialState,
   reducers: {
-    selectNode: (state, action) => {
+    setSelectedNodeId: (state, action) => {
       state.currentSelectedNodeId = action.payload
     },
     addNode: (state, action) => {
       const nextId = getNextId(state.nodes) + 1
       findNodeToInteract(state.nodes, action.payload, nextId)
+
       if (nextId === 1) state.currentSelectedNodeId = 1
     },
     removeNode: (state, action) => {
@@ -99,12 +114,26 @@ export const nodesSlice = createSlice({
     resetNodes: (state, action) => {
       state.nodes = []
     },
-    editNode: (state, action) => {
-      state.currentEditNodeId = action.payload
+    setEditedNodeId: (state, action) => {
+      state.currentEditedNodeId = action.payload
+    },
+    saveEditedNode: (state, action) => {
+      const isNodeEdited = editNodeById(
+        action.payload.id,
+        action.payload.value,
+        state.nodes
+      )
+      if (isNodeEdited) state.currentEditedNodeId = null
     },
   },
 })
 
-export const { selectNode, addNode, removeNode, resetNodes, editNode } =
-  nodesSlice.actions
+export const {
+  setSelectedNodeId,
+  addNode,
+  removeNode,
+  resetNodes,
+  setEditedNodeId,
+  saveEditedNode,
+} = nodesSlice.actions
 export default nodesSlice.reducer

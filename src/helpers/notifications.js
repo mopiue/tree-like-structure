@@ -5,7 +5,7 @@ const notify = ({ type, message }) => {
   return toast(message, {
     type,
     position: toast.POSITION.TOP_CENTER,
-    autoClose: 700,
+    autoClose: type === 'warning' || type === 'error' ? 3000 : 700,
   })
 }
 

@@ -1,5 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { selectNode } from '../../features/nodesSlice'
+import { useEffect, useState } from 'react'
+
+import { setSelectedNodeId, setEditedNodeId } from '../../features/nodesSlice'
+import NodeEditInput from '../NodeEditInput/NodeEditInput'
 
 function NodeElement({ node }) {
   const dispatch = useDispatch()
@@ -9,13 +12,10 @@ function NodeElement({ node }) {
   const currentSelectedNodeId = useSelector(
     (state) => state.nodes.currentSelectedNodeId
   )
-  const currentEditNodeId = useSelector(
-    (state) => state.nodes.currentEditNodeId
+  const currentEditedNodeId = useSelector(
+    (state) => state.nodes.currentEditedNodeId
   )
-
-  const handleNodeClick = (nodeId) => {
-    dispatch(selectNode(nodeId))
-  }
+  const [isCancelledEditing, setIsCancelledEditing] = useState(true)
 
   const StyleNodeElement = {
     width: '100%',
@@ -27,28 +27,31 @@ function NodeElement({ node }) {
       currentSelectedNodeId === node.id ? 'rgb(20, 198, 58)' : '',
   }
 
-  const StyleInputEdit = {
-    width: '200px',
-    border: 'none',
-    backgroundColor: '#cbf9d5',
-    height: '30px',
-    outline: 'none',
-    paddingLeft: '10px',
-    color: 'rgb(20, 198, 58)',
-    fontSize: '16px',
-  }
-
   const StyleNodeElementLi = {
     marginLeft: node.nestingLevel * nestingMarginMultiplier,
     listStyleType: 'none',
     color: currentSelectedNodeId === node.id ? 'white' : 'rgb(20, 198, 58)',
   }
 
+  const handleNodeClick = (nodeId) => {
+    if (currentEditedNodeId) dispatch(setEditedNodeId(null))
+
+    dispatch(setSelectedNodeId(nodeId))
+  }
+
+  useEffect(() => {
+    if (!currentEditedNodeId) setIsCancelledEditing(true)
+    else setIsCancelledEditing(false)
+
+    if (currentSelectedNodeId !== currentEditedNodeId)
+      setIsCancelledEditing(true)
+  }, [currentEditedNodeId, currentSelectedNodeId])
+
   return (
     <span style={StyleNodeElement}>
       <li style={StyleNodeElementLi} onClick={() => handleNodeClick(node.id)}>
-        {node.id === currentEditNodeId ? (
-          <input type="text" style={StyleInputEdit} />
+        {node.id === currentEditedNodeId && !isCancelledEditing ? (
+          <NodeEditInput nodeId={node.id} />
         ) : (
           node.value
         )}

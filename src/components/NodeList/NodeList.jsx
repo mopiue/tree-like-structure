@@ -4,27 +4,21 @@ import styles from './NodeList.module.scss'
 
 function NodeList() {
   const nodes = useSelector((state) => state.nodes.nodes)
-  const currentSelectedNodeId = useSelector(
-    (state) => state.nodes.currentSelectedNodeId
-  )
 
   const findNodes = (nodes, items, parentNestingLevel = -1) => {
     for (let i = 0; i < nodes.length; i++) {
       const node = nodes[i]
+      const nestingLevel = parentNestingLevel + 1
 
-      if (typeof node === 'object') {
-        const nestingLevel = parentNestingLevel + 1
-        const selected = currentSelectedNodeId === node.id ? true : false
+      items.push({ ...node, nestingLevel })
 
-        items.push({ ...node, nestingLevel, selected })
-
-        if (node.children) {
-          findNodes(node.children, items, nestingLevel)
-        }
+      if (node.children) {
+        findNodes(node.children, items, nestingLevel)
       }
     }
     return items
   }
+
   const nodeValues = findNodes(nodes, [])
 
   return (

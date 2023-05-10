@@ -12,17 +12,17 @@ function ActionsPanel() {
     (state) => state.nodes.currentSelectedNodeId
   )
   const nodes = useSelector((state) => state.nodes.nodes)
+
   const [buttonAddIsActive, setButtonAddIsActive] = useState(
     currentSelectedNodeId > 0 ? '' : 'disabled'
   )
+  const [buttonRemoveIsActive, setButtonRemoveIsActive] = useState('')
+  const [buttonEditIsActive, setButtonEditIsActive] = useState('')
   const [buttonResetIsActive, setButtonResetIsActive] = useState('')
 
   useEffect(() => {
-    if (currentSelectedNodeId !== null || !nodes[0]) {
-      setButtonAddIsActive('')
-    } else {
-      setButtonAddIsActive('disabled')
-    }
+    if (currentSelectedNodeId !== null || !nodes[0]) setButtonAddIsActive('')
+    else setButtonAddIsActive('disabled')
   }, [currentSelectedNodeId, nodes])
 
   useEffect(() => {
@@ -31,12 +31,21 @@ function ActionsPanel() {
       : setButtonResetIsActive('disabled')
   }, [nodes])
 
-  // сделать оработку состояние для кнопки Reset
+  useEffect(() => {
+    if (currentSelectedNodeId) {
+      setButtonRemoveIsActive('')
+      setButtonEditIsActive('')
+    } else {
+      setButtonRemoveIsActive('disabled')
+      setButtonEditIsActive('disabled')
+    }
+  }, [currentSelectedNodeId])
+
   return (
     <div className={styles.ActionsPanel}>
       <ButtonAdd disabled={buttonAddIsActive} />
-      <ButtonRemove disabled={currentSelectedNodeId ? '' : 'disabled'} />
-      <ButtonEdit disabled={''} />
+      <ButtonRemove disabled={buttonRemoveIsActive} />
+      <ButtonEdit disabled={buttonEditIsActive} />
       <ButtonReset disabled={buttonResetIsActive} />
     </div>
   )

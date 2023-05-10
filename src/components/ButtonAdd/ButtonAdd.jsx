@@ -16,12 +16,8 @@ function ButtonAdd({ disabled }) {
   )
 
   const handleAddClick = () => {
-    try {
-      dispatch(addNode(currentSelectedNodeId))
-      notify({ type: 'success', message: 'Succefully added a new node' })
-    } catch (error) {
-      notify({ type: 'error', message: error.message })
-    }
+    dispatch(addNode(currentSelectedNodeId))
+    notify({ type: 'success', message: 'Succefully added a new node' })
   }
 
   return (

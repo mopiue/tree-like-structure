@@ -40,7 +40,6 @@ button {
   border-radius: 5px;
 }
 
-/* button:hover {
-  background-color: rgba(20, 198, 58);
-  color: white;
-} */
+input {
+  font-family: inherit;
+}

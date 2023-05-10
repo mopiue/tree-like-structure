@@ -17,12 +17,8 @@ function ButtonRemove({ disabled }) {
 
   const handleRemoveClick = () => {
     if (currentSelectedNodeId) {
-      try {
-        dispatch(removeNode(currentSelectedNodeId))
-        notify({ type: 'success', message: 'Node was successfully removed' })
-      } catch (error) {
-        notify({ type: 'error', message: error.message })
-      }
+      dispatch(removeNode(currentSelectedNodeId))
+      notify({ type: 'success', message: 'Node was successfully removed' })
     }
   }
 
