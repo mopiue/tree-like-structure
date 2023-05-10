@@ -1,12 +1,16 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { addNode, selectNode } from '../../features/nodesSlice'
+import { selectNode } from '../../features/nodesSlice'
 
 function NodeElement({ node }) {
   const dispatch = useDispatch()
-  const nodes = useSelector((state) => state.tree.nodes)
-  const nestingMultiplier = useSelector((state) => state.tree.nestingMultiplier)
-  const currentSelectedNode = useSelector(
-    (state) => state.tree.currentSelectedNode
+  const nestingMarginMultiplier = useSelector(
+    (state) => state.nodes.nestingMarginMultiplier
+  )
+  const currentSelectedNodeId = useSelector(
+    (state) => state.nodes.currentSelectedNodeId
+  )
+  const currentEditNodeId = useSelector(
+    (state) => state.nodes.currentEditNodeId
   )
 
   const handleNodeClick = (nodeId) => {
@@ -15,20 +19,39 @@ function NodeElement({ node }) {
 
   const StyleNodeElement = {
     width: '100%',
+    height: '46px',
+    display: 'flex',
+    alignItems: 'center',
     padding: '10px',
-    backgroundColor: currentSelectedNode === node.id ? 'rgb(20, 198, 58)' : '',
+    backgroundColor:
+      currentSelectedNodeId === node.id ? 'rgb(20, 198, 58)' : '',
+  }
+
+  const StyleInputEdit = {
+    width: '200px',
+    border: 'none',
+    backgroundColor: '#cbf9d5',
+    height: '30px',
+    outline: 'none',
+    paddingLeft: '10px',
+    color: 'rgb(20, 198, 58)',
+    fontSize: '16px',
   }
 
   const StyleNodeElementLi = {
-    marginLeft: node.nestingLevel * nestingMultiplier,
+    marginLeft: node.nestingLevel * nestingMarginMultiplier,
     listStyleType: 'none',
-    color: currentSelectedNode === node.id ? 'white' : 'rgb(20, 198, 58)',
+    color: currentSelectedNodeId === node.id ? 'white' : 'rgb(20, 198, 58)',
   }
 
   return (
     <span style={StyleNodeElement}>
       <li style={StyleNodeElementLi} onClick={() => handleNodeClick(node.id)}>
-        {node.value}
+        {node.id === currentEditNodeId ? (
+          <input type="text" style={StyleInputEdit} />
+        ) : (
+          node.value
+        )}
       </li>
     </span>
   )

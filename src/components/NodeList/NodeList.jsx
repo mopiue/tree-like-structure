@@ -3,9 +3,9 @@ import NodeElement from '../NodeElement/NodeElement'
 import styles from './NodeList.module.scss'
 
 function NodeList() {
-  const nodes = useSelector((state) => state.tree.nodes)
-  const currentSelectedNode = useSelector(
-    (state) => state.tree.currentSelectedNode
+  const nodes = useSelector((state) => state.nodes.nodes)
+  const currentSelectedNodeId = useSelector(
+    (state) => state.nodes.currentSelectedNodeId
   )
 
   const findNodes = (nodes, items, parentNestingLevel = -1) => {
@@ -14,7 +14,7 @@ function NodeList() {
 
       if (typeof node === 'object') {
         const nestingLevel = parentNestingLevel + 1
-        const selected = currentSelectedNode === node.id ? true : false
+        const selected = currentSelectedNodeId === node.id ? true : false
 
         items.push({ ...node, nestingLevel, selected })
 

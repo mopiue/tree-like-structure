@@ -2,7 +2,7 @@ import { configureStore, combineReducers } from '@reduxjs/toolkit'
 import { nodesSlice } from '../features/nodesSlice'
 
 const rootReducer = combineReducers({
-  tree: nodesSlice.reducer,
+  nodes: nodesSlice.reducer,
 })
 
 const store = configureStore({
