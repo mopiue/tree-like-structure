@@ -11,13 +11,13 @@ function NodeEditInput({ nodeId }) {
 
   const StyleInputEdit = {
     width: '200px',
+    height: '30px',
+    paddingLeft: '10px',
+    fontSize: '16px',
     border: 'none',
     backgroundColor: '#cbf9d5',
-    height: '30px',
     outline: 'none',
-    paddingLeft: '10px',
     color: 'rgb(20, 198, 58)',
-    fontSize: '16px',
   }
 
   const handleNodeEditInputClick = (event) => {
@@ -32,7 +32,8 @@ function NodeEditInput({ nodeId }) {
             type: 'warning',
             message: 'The node name must not contain more than 10 characters',
           })
-          return false
+          setInputEditValue('')
+          return
         }
 
         const result = dispatch(

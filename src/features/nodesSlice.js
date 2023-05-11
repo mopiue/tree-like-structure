@@ -30,7 +30,7 @@ const initialState = {
       ],
     },
   ],
-  nestingMarginMultiplier: 25,
+  nestingMarginMultiplier: 30,
   currentSelectedNodeId: null,
   currentEditedNodeId: null,
 }
@@ -46,22 +46,22 @@ const getNextId = (arr) => {
   return maxId
 }
 
+const createNodeToPush = (nextId) => {
+  return {
+    id: nextId,
+    value: `Node ${nextId}`,
+    children: [],
+  }
+}
+
 const findNodeToInteract = (nodes, nodeId, nextId) => {
   if (nextId === 1) {
-    nodes.push({
-      id: 1,
-      value: 'Node 1',
-      children: [],
-    })
+    nodes.push(createNodeToPush(nextId))
     return
   }
   nodes.forEach((node) => {
     if (node.id === nodeId) {
-      node.children.push({
-        id: nextId,
-        value: `Node ${nextId}`,
-        children: [],
-      })
+      node.children.push(createNodeToPush(nextId))
     } else if (node.children) {
       findNodeToInteract(node.children, nodeId, nextId)
     }
@@ -107,8 +107,7 @@ export const nodesSlice = createSlice({
       if (nextId === 1) state.currentSelectedNodeId = 1
     },
     removeNode: (state, action) => {
-      const updatedNodes = removeNodeById(action.payload, state.nodes)
-      state.nodes = updatedNodes
+      state.nodes = removeNodeById(action.payload, state.nodes)
       state.currentSelectedNodeId = null
     },
     resetNodes: (state, action) => {

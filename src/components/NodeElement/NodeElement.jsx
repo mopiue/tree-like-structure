@@ -48,8 +48,8 @@ function NodeElement({ node }) {
   }, [currentEditedNodeId, currentSelectedNodeId])
 
   return (
-    <span style={StyleNodeElement}>
-      <li style={StyleNodeElementLi} onClick={() => handleNodeClick(node.id)}>
+    <span style={StyleNodeElement} onClick={() => handleNodeClick(node.id)}>
+      <li style={StyleNodeElementLi}>
         {node.id === currentEditedNodeId && !isCancelledEditing ? (
           <NodeEditInput nodeId={node.id} />
         ) : (
