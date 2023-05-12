@@ -1,9 +1,13 @@
 import { useSelector } from 'react-redux'
+
 import NodeElement from '../NodeElement/NodeElement'
+import extractIds from '../../helpers/extractIds'
+
 import styles from './NodeList.module.scss'
 
 function NodeList() {
   const nodes = useSelector((state) => state.nodes.nodes)
+  const toRemove = useSelector((state) => state.nodes.toRemove)
 
   const findNodes = (nodes, items, parentNestingLevel = -1) => {
     for (let i = 0; i < nodes.length; i++) {
@@ -16,7 +20,9 @@ function NodeList() {
         findNodes(node.children, items, nestingLevel)
       }
     }
-    return items
+
+    const extractIdsFromToRemove = extractIds(toRemove)
+    return items.filter((node) => !extractIdsFromToRemove.includes(node.id))
   }
 
   const nodeValues = findNodes(nodes, [])

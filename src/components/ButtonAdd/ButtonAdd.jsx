@@ -11,9 +11,7 @@ const ButtonAddStyle = styled.button`
 
 function ButtonAdd({ disabled }) {
   const dispatch = useDispatch()
-  const currentSelectedNodeId = useSelector(
-    (state) => state.nodes.currentSelectedNodeId
-  )
+  const currentSelectedNodeId = useSelector((state) => state.nodes.current.id)
 
   const handleAddClick = () => {
     dispatch(addNode(currentSelectedNodeId))
@@ -21,7 +19,7 @@ function ButtonAdd({ disabled }) {
   }
 
   return (
-    <ButtonAddStyle onClick={handleAddClick} disabled={disabled}>
+    <ButtonAddStyle onClick={handleAddClick} disabled={disabled} id="test">
       Add
     </ButtonAddStyle>
   )

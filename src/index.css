@@ -30,16 +30,6 @@ body {
   color: white;
 }
 
-button {
-  padding: 10px 20px;
-  outline: none;
-  border: none;
-  border: 1px solid #c0c0c0;
-  background-color: white;
-  cursor: pointer;
-  border-radius: 5px;
-}
-
 input {
   font-family: inherit;
 }

@@ -30,9 +30,13 @@ const initialState = {
       ],
     },
   ],
+  toRemove: [],
   nestingMarginMultiplier: 30,
-  currentSelectedNodeId: null,
-  currentEditedNodeId: null,
+  current: {
+    id: null,
+    editableId: null,
+    value: '',
+  },
 }
 
 const getNextId = (arr) => {
@@ -68,15 +72,49 @@ const findNodeToInteract = (nodes, nodeId, nextId) => {
   })
 }
 
-const removeNodeById = (id, nodes) => {
-  const filteredNodes = Object.values(nodes).filter((node) => node.id !== id)
+const cleanNodesFromRemovesIds = (removes, nodes) => {
+  const filteredNodes = Object.values(nodes).filter(
+    (node) => !removes.includes(node.id)
+  )
 
-  Object.values(nodes).forEach((node) => {
-    if (node.children.length > 0)
-      node.children = removeNodeById(id, node.children)
+  filteredNodes.forEach((node) => {
+    if (node.children.length > 0) {
+      node.children = cleanNodesFromRemovesIds(removes, node.children)
+    }
   })
 
   return filteredNodes
+}
+
+function findNodeAndChilds(nodeId, nodes) {
+  function findNodeById(nodeId, nodes) {
+    for (let node of nodes) {
+      if (node.id === nodeId) {
+        return node
+      }
+      if (node.children.length > 0) {
+        let nestedNode = findNodeById(nodeId, node.children)
+        if (nestedNode) {
+          return nestedNode
+        }
+      }
+    }
+    return null
+  }
+
+  function getAllChildrenIds(node) {
+    if (!node) {
+      return null
+    }
+    const childIds = node.children.flatMap((child) => [
+      child.id,
+      ...getAllChildrenIds(child),
+    ])
+    return childIds
+  }
+
+  const node = findNodeById(nodeId, nodes)
+  return getAllChildrenIds(node)
 }
 
 const editNodeById = (id, value, nodes) => {
@@ -97,24 +135,56 @@ export const nodesSlice = createSlice({
   name: 'tree',
   initialState,
   reducers: {
-    setSelectedNodeId: (state, action) => {
-      state.currentSelectedNodeId = action.payload
+    setActiveNodeId: (state, action) => {
+      state.current.id = action.payload
+    },
+    setActiveNodeValue: (state, action) => {
+      state.current.value = action.payload
     },
     addNode: (state, action) => {
       const nextId = getNextId(state.nodes) + 1
       findNodeToInteract(state.nodes, action.payload, nextId)
 
-      if (nextId === 1) state.currentSelectedNodeId = 1
+      if (nextId === 1) state.current.id = 1
     },
     removeNode: (state, action) => {
-      state.nodes = removeNodeById(action.payload, state.nodes)
-      state.currentSelectedNodeId = null
+      const toRemovesIds = findNodeAndChilds(
+        action.payload,
+        Object.values(state.nodes)
+      )
+
+      if (toRemovesIds.length > 0)
+        state.toRemove.push({
+          [action.payload]: [action.payload, ...toRemovesIds],
+        })
+      else state.toRemove.push(action.payload)
+
+      // state.toRemove.push(action.payload)
+      state.current.id = null
+      state.current.editableId = null
+    },
+    undoRemove: (state, action) => {
+      const filtered = state.toRemove.filter(
+        (item) =>
+          item !== action.payload &&
+          !Object.hasOwnProperty.call(item, action.payload)
+      )
+      state.toRemove = filtered
+    },
+    cleanNodes: (state, action) => {
+      state.nodes = cleanNodesFromRemovesIds(
+        Object.values(state.toRemove),
+        state.nodes
+      )
+      // state.toRemove = []
     },
     resetNodes: (state, action) => {
       state.nodes = []
+      state.current.id = null
+      state.current.editableId = null
     },
     setEditedNodeId: (state, action) => {
-      state.currentEditedNodeId = action.payload
+      state.current.editableId = action.payload
     },
     saveEditedNode: (state, action) => {
       const isNodeEdited = editNodeById(
@@ -122,17 +192,20 @@ export const nodesSlice = createSlice({
         action.payload.value,
         state.nodes
       )
-      if (isNodeEdited) state.currentEditedNodeId = null
+      if (isNodeEdited) state.current.editableId = null
     },
   },
 })
 
 export const {
-  setSelectedNodeId,
+  setActiveNodeId,
+  setActiveNodeValue,
   addNode,
   removeNode,
+  cleanNodes,
   resetNodes,
   setEditedNodeId,
   saveEditedNode,
+  undoRemove,
 } = nodesSlice.actions
 export default nodesSlice.reducer

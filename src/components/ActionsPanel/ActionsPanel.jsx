@@ -8,9 +8,7 @@ import styles from './ActionsPanel.module.scss'
 import { useEffect, useState } from 'react'
 
 function ActionsPanel() {
-  const currentSelectedNodeId = useSelector(
-    (state) => state.nodes.currentSelectedNodeId
-  )
+  const currentSelectedNodeId = useSelector((state) => state.nodes.current.id)
   const nodes = useSelector((state) => state.nodes.nodes)
 
   const [buttonAddIsActive, setButtonAddIsActive] = useState(

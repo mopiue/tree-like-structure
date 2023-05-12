@@ -1,7 +1,11 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
 
-import { setSelectedNodeId, setEditedNodeId } from '../../features/nodesSlice'
+import {
+  setActiveNodeId,
+  setActiveNodeValue,
+  setEditedNodeId,
+} from '../../features/nodesSlice'
 import NodeEditInput from '../NodeEditInput/NodeEditInput'
 
 function NodeElement({ node }) {
@@ -9,11 +13,9 @@ function NodeElement({ node }) {
   const nestingMarginMultiplier = useSelector(
     (state) => state.nodes.nestingMarginMultiplier
   )
-  const currentSelectedNodeId = useSelector(
-    (state) => state.nodes.currentSelectedNodeId
-  )
+  const currentSelectedNodeId = useSelector((state) => state.nodes.current.id)
   const currentEditedNodeId = useSelector(
-    (state) => state.nodes.currentEditedNodeId
+    (state) => state.nodes.current.editableId
   )
   const [isCancelledEditing, setIsCancelledEditing] = useState(true)
 
@@ -34,7 +36,8 @@ function NodeElement({ node }) {
   }
 
   const handleNodeClick = () => {
-    const selectedId = dispatch(setSelectedNodeId(node.id))
+    dispatch(setActiveNodeValue(node.value))
+    const selectedId = dispatch(setActiveNodeId(node.id))
     if (selectedId.payload !== currentSelectedNodeId && currentEditedNodeId)
       dispatch(setEditedNodeId(null))
   }

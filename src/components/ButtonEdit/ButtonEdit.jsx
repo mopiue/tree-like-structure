@@ -10,11 +10,9 @@ const ButtonEditStyle = styled.button`
 
 function ButtonEdit({ disabled }) {
   const dispatch = useDispatch()
-  const currentSelectedNodeId = useSelector(
-    (state) => state.nodes.currentSelectedNodeId
-  )
+  const currentSelectedNodeId = useSelector((state) => state.nodes.current.id)
   const currentEditedNodeId = useSelector(
-    (state) => state.nodes.currentEditedNodeId
+    (state) => state.nodes.current.editableId
   )
 
   const handleEditClick = () => {
