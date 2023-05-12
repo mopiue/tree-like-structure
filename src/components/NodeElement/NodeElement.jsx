@@ -33,10 +33,14 @@ function NodeElement({ node }) {
     color: currentSelectedNodeId === node.id ? 'white' : 'rgb(20, 198, 58)',
   }
 
-  const handleNodeClick = (nodeId) => {
-    if (currentEditedNodeId) dispatch(setEditedNodeId(null))
+  const handleNodeClick = () => {
+    const selectedId = dispatch(setSelectedNodeId(node.id))
+    if (selectedId.payload !== currentSelectedNodeId && currentEditedNodeId)
+      dispatch(setEditedNodeId(null))
+  }
 
-    dispatch(setSelectedNodeId(nodeId))
+  const handleNodeDoubleClick = () => {
+    dispatch(setEditedNodeId(node.id))
   }
 
   useEffect(() => {
@@ -48,7 +52,11 @@ function NodeElement({ node }) {
   }, [currentEditedNodeId, currentSelectedNodeId])
 
   return (
-    <span style={StyleNodeElement} onClick={() => handleNodeClick(node.id)}>
+    <span
+      style={StyleNodeElement}
+      onClick={() => handleNodeClick()}
+      onDoubleClick={() => handleNodeDoubleClick()}
+    >
       <li style={StyleNodeElementLi}>
         {node.id === currentEditedNodeId && !isCancelledEditing ? (
           <NodeEditInput nodeId={node.id} />

@@ -1,18 +1,36 @@
 import { ToastContainer } from 'react-toastify'
+import { useDispatch, useSelector } from 'react-redux'
 
+import { setEditedNodeId } from './features/nodesSlice'
 import NodeList from './components/NodeList/NodeList'
 import ActionsPanel from './components/ActionsPanel/ActionsPanel'
+
 import './index.css'
-import { useRef } from 'react'
 
 function App() {
-  const inputEditRef = useRef(null)
+  const dispatch = useDispatch()
+  const currentEditedNodeId = useSelector(
+    (state) => state.nodes.currentEditedNodeId
+  )
+
+  const body = document.querySelector('body')
+
+  const handleOutsideClick = () => {
+    if (currentEditedNodeId) {
+      dispatch(setEditedNodeId(null))
+    }
+  }
+
+  body.addEventListener('click', () => {
+    handleOutsideClick()
+  })
+
   return (
-    <div className="trees">
+    <div className="tree" onClick={handleOutsideClick}>
       <ToastContainer limit={2} />
       <span className="title">Tree</span>
-      <NodeList inputEditRef={inputEditRef} />
-      <ActionsPanel inputEditRef={inputEditRef} />
+      <NodeList />
+      <ActionsPanel />
     </div>
   )
 }
