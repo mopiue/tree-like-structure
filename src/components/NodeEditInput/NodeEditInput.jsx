@@ -2,11 +2,12 @@ import { useEffect, useRef, useState } from 'react'
 import { useDispatch } from 'react-redux'
 
 import { saveEditedNode } from '../../features/nodesSlice'
-import notify from '../../helpers/notifications'
+import useNotify from '../../hooks/useNotify'
 
 function NodeEditInput({ nodeId }) {
   const dispatch = useDispatch()
   const [inputEditValue, setInputEditValue] = useState('')
+  const { notify } = useNotify()
   const inputEditRef = useRef(null)
 
   const StyleInputEdit = {

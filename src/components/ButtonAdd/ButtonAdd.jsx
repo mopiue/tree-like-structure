@@ -1,21 +1,25 @@
-import styled from 'styled-components'
 import { useDispatch, useSelector } from 'react-redux'
 
-import buttonStyles from '../buttonStyles'
 import { addNode } from '../../features/nodesSlice'
-import notify from '../../helpers/notifications'
+import buttonsStyles from '../buttonsStyles'
+import useNotify from '../../hooks/useNotify'
+import styled from 'styled-components'
 
 const ButtonAddStyle = styled.button`
-  ${({ disabled }) => buttonStyles(disabled)}
+  ${({ disabled }) => buttonsStyles(disabled)}
 `
 
 function ButtonAdd({ disabled }) {
   const dispatch = useDispatch()
   const currentSelectedNodeId = useSelector((state) => state.nodes.current.id)
+  const { notify } = useNotify()
 
   const handleAddClick = () => {
     dispatch(addNode(currentSelectedNodeId))
-    notify({ type: 'success', message: 'Succefully added a new node' })
+    notify({
+      type: 'success',
+      message: `Successfully added a new node`,
+    })
   }
 
   return (

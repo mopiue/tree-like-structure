@@ -1,35 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { findNodeAndChilds, clearDeletableIds } from '../helpers/treeUtils'
 
 const initialState = {
-  nodes: [
-    {
-      id: 1,
-      value: 'Node 1',
-      children: [
-        {
-          id: 2,
-          value: 'Node 2',
-          children: [
-            {
-              id: 3,
-              value: 'Node 3',
-              children: [],
-            },
-            {
-              id: 4,
-              value: 'Node 4',
-              children: [],
-            },
-          ],
-        },
-        {
-          id: 5,
-          value: 'Node 5',
-          children: [],
-        },
-      ],
-    },
-  ],
+  nodes: [],
   toRemove: [],
   nestingMarginMultiplier: 30,
   current: {
@@ -72,51 +45,6 @@ const findNodeToInteract = (nodes, nodeId, nextId) => {
   })
 }
 
-const cleanNodesFromRemovesIds = (removes, nodes) => {
-  const filteredNodes = Object.values(nodes).filter(
-    (node) => !removes.includes(node.id)
-  )
-
-  filteredNodes.forEach((node) => {
-    if (node.children.length > 0) {
-      node.children = cleanNodesFromRemovesIds(removes, node.children)
-    }
-  })
-
-  return filteredNodes
-}
-
-function findNodeAndChilds(nodeId, nodes) {
-  function findNodeById(nodeId, nodes) {
-    for (let node of nodes) {
-      if (node.id === nodeId) {
-        return node
-      }
-      if (node.children.length > 0) {
-        let nestedNode = findNodeById(nodeId, node.children)
-        if (nestedNode) {
-          return nestedNode
-        }
-      }
-    }
-    return null
-  }
-
-  function getAllChildrenIds(node) {
-    if (!node) {
-      return null
-    }
-    const childIds = node.children.flatMap((child) => [
-      child.id,
-      ...getAllChildrenIds(child),
-    ])
-    return childIds
-  }
-
-  const node = findNodeById(nodeId, nodes)
-  return getAllChildrenIds(node)
-}
-
 const editNodeById = (id, value, nodes) => {
   let isEdited = false
   Object.values(nodes).forEach((node) => {
@@ -142,10 +70,13 @@ export const nodesSlice = createSlice({
       state.current.value = action.payload
     },
     addNode: (state, action) => {
-      const nextId = getNextId(state.nodes) + 1
+      const nextId = getNextId(Object.values(state.nodes)) + 1
       findNodeToInteract(state.nodes, action.payload, nextId)
 
-      if (nextId === 1) state.current.id = 1
+      if (nextId === 1) {
+        state.current.id = 1
+        state.current.value = 'Node 1'
+      }
     },
     removeNode: (state, action) => {
       const toRemovesIds = findNodeAndChilds(
@@ -159,7 +90,6 @@ export const nodesSlice = createSlice({
         })
       else state.toRemove.push(action.payload)
 
-      // state.toRemove.push(action.payload)
       state.current.id = null
       state.current.editableId = null
     },
@@ -169,14 +99,11 @@ export const nodesSlice = createSlice({
           item !== action.payload &&
           !Object.hasOwnProperty.call(item, action.payload)
       )
+      state.current.id = action.payload
       state.toRemove = filtered
     },
     cleanNodes: (state, action) => {
-      state.nodes = cleanNodesFromRemovesIds(
-        Object.values(state.toRemove),
-        state.nodes
-      )
-      // state.toRemove = []
+      clearDeletableIds(state.nodes, state.toRemove)
     },
     resetNodes: (state, action) => {
       state.nodes = []

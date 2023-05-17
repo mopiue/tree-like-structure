@@ -1,34 +1,30 @@
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import UndoRemove from '../components/UndoRemove/UndoRemove'
-import { setActiveNodeId, undoRemove } from '../features/nodesSlice'
-import { useDispatch, useSelector } from 'react-redux'
+import { undoRemove } from '../features/nodesSlice'
+import { useDispatch } from 'react-redux'
 import { cleanNodes } from '../features/nodesSlice'
 
 const useNotify = () => {
   const dispatch = useDispatch()
-  const toRemove = useSelector((state) => state.nodes.toRemove)
 
   const handleUndoRemove = (id) => {
-    if (!toRemove.includes(1)) {
-      dispatch(undoRemove(id))
-      dispatch(setActiveNodeId(id))
-    }
+    dispatch(undoRemove(id))
   }
 
-  const notify = ({ id, type, message }) => {
+  const notify = ({ id, type, purpose, message }) => {
     return toast(
-      <UndoRemove
-        onUndo={() => handleUndoRemove(id)}
-        message={message}
-        id={id}
-      />,
+      purpose === 'remove' ? (
+        <UndoRemove onUndo={() => handleUndoRemove(id)} message={message} />
+      ) : (
+        message
+      ),
       {
         type,
         position: toast.POSITION.TOP_CENTER,
-        autoClose: type === 'warning' || type === 'error' ? 3000 : 3000,
+        autoClose: type === 'warning' || type === 'error' ? 5000 : 500,
         onClose: () => {
-          dispatch(cleanNodes())
+          if (purpose === 'remove') dispatch(cleanNodes())
         },
       }
     )

@@ -1,11 +1,11 @@
 import styled from 'styled-components'
 import { useDispatch, useSelector } from 'react-redux'
 
-import buttonStyles from '../buttonStyles'
+import buttonsStyles from '../buttonsStyles'
 import { setEditedNodeId } from '../../features/nodesSlice'
 
 const ButtonEditStyle = styled.button`
-  ${({ disabled }) => [...buttonStyles(disabled), 'width: 80px']}
+  ${({ disabled }) => [...buttonsStyles(disabled), 'width: 80px']}
 `
 
 function ButtonEdit({ disabled }) {

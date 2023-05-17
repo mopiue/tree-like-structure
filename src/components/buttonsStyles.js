@@ -1,9 +1,8 @@
 import { css } from 'styled-components'
 
-export const buttonStyles = (disabled) => css`
+export const buttonsStyles = (disabled) => css`
   padding: 10px 20px;
   outline: none;
-  border: none;
   border: 1px solid #c0c0c0;
   background-color: white;
   cursor: pointer;
@@ -23,4 +22,4 @@ export const buttonStyles = (disabled) => css`
   }}
 `
 
-export default buttonStyles
+export default buttonsStyles

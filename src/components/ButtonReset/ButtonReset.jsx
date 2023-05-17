@@ -1,16 +1,17 @@
-import styled from 'styled-components'
 import { useDispatch, useSelector } from 'react-redux'
+import styled from 'styled-components'
 
-import buttonStyles from '../buttonStyles'
+import buttonsStyles from '../buttonsStyles'
 import { resetNodes } from '../../features/nodesSlice'
-import notify from '../../helpers/notifications'
+import useNotify from '../../hooks/useNotify'
 
 const ButtonResetStyle = styled.button`
-  ${({ disabled }) => buttonStyles(disabled)}
+  ${({ disabled }) => buttonsStyles(disabled)}
 `
 
 function ButtonReset({ disabled }) {
   const dispatch = useDispatch()
+  const { notify } = useNotify()
   const nodes = useSelector((state) => state.nodes.nodes)
 
   const handleResetClick = () => {

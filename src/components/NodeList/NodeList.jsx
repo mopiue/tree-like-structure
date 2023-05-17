@@ -1,8 +1,6 @@
 import { useSelector } from 'react-redux'
-
 import NodeElement from '../NodeElement/NodeElement'
-import extractIds from '../../helpers/extractIds'
-
+import { extractIds } from '../../helpers/treeUtils'
 import styles from './NodeList.module.scss'
 
 function NodeList() {
@@ -21,8 +19,8 @@ function NodeList() {
       }
     }
 
-    const extractIdsFromToRemove = extractIds(toRemove)
-    return items.filter((node) => !extractIdsFromToRemove.includes(node.id))
+    const deletableIds = extractIds(toRemove)
+    return items.filter((node) => !deletableIds.includes(node.id))
   }
 
   const nodeValues = findNodes(nodes, [])

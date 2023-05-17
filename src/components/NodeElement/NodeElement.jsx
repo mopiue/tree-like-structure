@@ -36,6 +36,7 @@ function NodeElement({ node }) {
   }
 
   const handleNodeClick = () => {
+    //TODO: Переделать под один dispatch?
     dispatch(setActiveNodeValue(node.value))
     const selectedId = dispatch(setActiveNodeId(node.id))
     if (selectedId.payload !== currentSelectedNodeId && currentEditedNodeId)

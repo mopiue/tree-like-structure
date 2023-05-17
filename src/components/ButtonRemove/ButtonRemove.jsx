@@ -1,12 +1,12 @@
 import styled from 'styled-components'
 import { useDispatch, useSelector } from 'react-redux'
 
-import buttonStyles from '../buttonStyles'
+import buttonsStyles from '../buttonsStyles'
 import { removeNode } from '../../features/nodesSlice'
 import useNotify from '../../hooks/useNotify'
 
 const ButtonRemoveStyle = styled.button`
-  ${({ disabled }) => buttonStyles(disabled)}
+  ${({ disabled }) => buttonsStyles(disabled)}
 `
 
 function ButtonRemove({ disabled }) {
@@ -21,7 +21,8 @@ function ButtonRemove({ disabled }) {
 
       notify({
         id: currentSelectedNodeId,
-        type: 'success',
+        type: 'warning',
+        purpose: 'remove',
         message: `${currentNodeValue} will be deleted`,
       })
     }
